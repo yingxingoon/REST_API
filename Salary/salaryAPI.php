@@ -1,11 +1,19 @@
 <?php
 header("Content-Type:application/json");
-if ((isset($_POST['employeeID']) && $_POST['employeeName'] && $_POST['date'] && $_POST['employeType'] 
-&& $_POST['basicSalary'] && $_POST['bonus'] && $_POST['overtimeNum'] && $_POST['overtimeRate'] && $_POST['earlyOut'] 
-&& $_POST['lateness']) || (isset($_POST['employeeID']) && $_POST['employeeName'] && $_POST['date'] 
-&& $_POST['employeType'] && $_POST['hoursWorked'] && $_POST['hourlyRate']) != "") {
+if (
+    (true
+        /*isset($_POST['employeeID']) /*&& isset($_POST['employeeName']) && isset($_POST['date']) &&
+        isset($_POST['employeeType']) && isset($_POST['basicSalary']) && isset($_POST['bonus']) &&
+        isset($_POST['overtimeNum']) && isset($_POST['overtimeRate']) && isset($_POST['earlyOut']) &&
+        isset($_POST['lateness'])
+    )
+    ||
+    (
+        isset($_POST['employeeID']) && isset($_POST['employeeName']) && isset($_POST['date']) &&
+        isset($_POST['employeeType']) && isset($_POST['hoursWorked']) && isset($_POST['hourlyRate'])
+    )*/
+)){
 	
-	include('db.php');
 	$employeeID = $_POST['employeeID'];
 	$employeeName = $_POST['employeeName'];
 	$date = $_POST['Date'];
@@ -20,41 +28,44 @@ if ((isset($_POST['employeeID']) && $_POST['employeeName'] && $_POST['date'] && 
 		$lateness = $_POST['lateness'];   
 
 		$netCalSalary = &$basicSalary + $bonus + ($overtimeNum * $overtimeRate) - $earlyOut - $lateness;
-		response($netSalary, 200, $netCalSalary);
+		
 
-		$query = "INSERT INTO salaryReport (employeeID, employeeName, employeeType, salDate, netCalSalary) VALUES ($employeeID, '$employeeName', '$employeeType', $date, $netCalSalary)";
-		if(mysqli_query($con, $query)){
-			response(null, 200, "Data inserted successfully");
-		} else{
-			response(null, 400, "Error");
-		}
+		$output = array(
+			'employeeID' => $employeeID,
+			'employeeName' => $employeeName,
+			'date' => $date,
+			'employeeType' => $employeeType,
+			'netCalSalary' => $netCalSalary
+		);
+		response($output, 200, "Calculated-Full Time");
+
 	} else{
 		$hoursWorked = $_POST['hoursWorked'];
 		$hourlyRate = $_POST['hourlyRate'];
 
 		$netCalSalary = $hoursWorked * $hourlyRate;
-		response($netSalary, 200, $netCalSalary);
-
-		$query = "INSERT INTO salaryReport (employeeID, employeeName, employeeType, salDate, netCalSalary) VALUES ($employeeID, '$employeeName', '$employeeType', $date, $netCalSalary)";
-		if(mysqli_query($con, $query)){
-			response(null, 200, "Data inserted successfully");
-		} else{
-			response(null, 400, "Error");
-		}
-
+		
+		$output = array(
+			'employeeID' => $employeeID,
+			'employeeName' => $employeeName,
+			'date' => $date,
+			'employeeType' => $employeeType,
+			'netCalSalary' => $netCalSalary
+		);
+		response($output, 200, "Calculated-Part Time");
 	}
 } else {
 	response(NULL, 400, "Invalid Request");
 }
 
-function response($username, $code, $message)
+function response($output, $code, $message)
 {
     // Set the response header and status code
     http_response_code($code);
 
     // Construct the response array
     $response = array(
-        'username' => $username,
+        'output' => $output,
         'code' => $code,
         'message' => $message
     );

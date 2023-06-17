@@ -1,22 +1,20 @@
 <?php
 header("Content-Type:application/json");
 if (
-    (true
-        /*isset($_POST['employeeID']) /*&& isset($_POST['employeeName']) && isset($_POST['date']) &&
-        isset($_POST['employeeType']) && isset($_POST['basicSalary']) && isset($_POST['bonus']) &&
-        isset($_POST['overtimeNum']) && isset($_POST['overtimeRate']) && isset($_POST['earlyOut']) &&
-        isset($_POST['lateness'])
-    )
-    ||
-    (
-        isset($_POST['employeeID']) && isset($_POST['employeeName']) && isset($_POST['date']) &&
-        isset($_POST['employeeType']) && isset($_POST['hoursWorked']) && isset($_POST['hourlyRate'])
-    )*/
-)){
+	(isset($_POST['employeeID']) && isset($_POST['employeeName']) && isset($_POST['date']) &&
+	($_POST['employeeType'] == "fullTime") && isset($_POST['basicSalary']) && isset($_POST['bonus']) &&
+	isset($_POST['overtimeNum']) && isset($_POST['overtimeRate']) && isset($_POST['earlyOut']) &&
+	isset($_POST['lateness']))
+
+	||
+
+	(isset($_POST['employeeID']) && isset($_POST['employeeName']) && isset($_POST['date']) && 
+	($_POST['employeeType'] == "partTime") && isset($_POST['hoursWorked']) && isset($_POST['hourlyRate']))
+) {
 	
 	$employeeID = $_POST['employeeID'];
 	$employeeName = $_POST['employeeName'];
-	$date = $_POST['Date'];
+	$date = $_POST['date'];
 	$employeeType = $_POST['employeeType'];
 
 	if($employeeType == "fullTime"){
@@ -27,7 +25,10 @@ if (
 		$earlyOut = $_POST['earlyOut'];
 		$lateness = $_POST['lateness'];   
 
-		$netCalSalary = &$basicSalary + $bonus + ($overtimeNum * $overtimeRate) - $earlyOut - $lateness;
+		$overtime = $overtimeNum * $overtimeRate;
+		$deduct = $earlyOut + $lateness;
+
+		$netCalSalary = $basicSalary + $bonus + ($overtime) - $deduct;
 		
 
 		$output = array(

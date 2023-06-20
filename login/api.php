@@ -7,7 +7,8 @@ if (isset($_POST['username']) && $_POST['password'] != "") {
 
     $result = mysqli_query(
         $con,
-        "SELECT * FROM `user` WHERE username='$username' AND password='$password'"
+        // "SELECT * FROM `user` WHERE username='$username' AND password='$password'" //yx
+        "SELECT * FROM `users` WHERE username='$username' AND password='$password'" //kq
     );
     if (mysqli_num_rows($result) > 0) {
         response($username, 200, "Login successful");

@@ -2,7 +2,7 @@
 // Enter your Host, username, password, and database name below
 $host = "localhost";
 $username = "root";
-$password = "password";
+$password = "";
 $database = "salarycalculator";
 
 // Create a MySQL connection
